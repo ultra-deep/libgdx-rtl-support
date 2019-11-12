@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.StringBuilder;
  */
 public class RtlController {
     private static final RtlGlyph ALL_CHARS[] = RtlGlyph.values();
-    public static MixedChars MIXED_CHARS[] = new MixedChars[] {
+    public static final MixedChars MIXED_CHARS[] = new MixedChars[] {
             new MixedChars(RtlGlyph.LA).isMixOf(RtlGlyph.LAM , RtlGlyph.A__SIMPLE),
             new MixedChars(RtlGlyph.LA__HAMZE_TOP).isMixOf(RtlGlyph.LAM , RtlGlyph.A__HAMZE_TOP),
             new MixedChars(RtlGlyph.LA__HAMZE_BOTTOM).isMixOf(RtlGlyph.LAM , RtlGlyph.A__HAMZE_BOTTOM),
