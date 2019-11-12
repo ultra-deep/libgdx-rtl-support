@@ -108,25 +108,11 @@ public class RtlController {
         }
         return rt;
     }
-    private char convertEnglishDigitToPersianIfIsDigit( char rtlChar) {
-        if(!mJustUseEnglishDigit && isEnglishDigit(rtlChar))
-            return RtlGlyph.getPersianDigit(rtlChar);
-        return rtlChar;
-    }
-    private char fixParenthesisAndBracketsRtl(char rtlChar) {
-        switch (rtlChar)
-        {
-            case ')' : return '('; case '(' : return ')';
-            case ']' : return '['; case '[' : return ']';
-            case '}' : return '{'; case '{' : return '}';
-            case '>' : return '<'; case '<' : return '>';
-        }
-        return rtlChar;
-    }
     /**
      * reverse the glyphs for rendering rtl languages (Persian/Arabic)
      * @param run
-     */ public void reverse(GlyphLayout.GlyphRun run) {
+     */
+    public void reverse(GlyphLayout.GlyphRun run) {
         Array<BitmapFont.Glyph> originGlyphs = new Array<>();
         Array<BitmapFont.Glyph> persianGlyphs = new Array<>();
 //        Array<BitmapFont.Glyph> englishGlyphs = new Array<>();
@@ -164,6 +150,21 @@ public class RtlController {
     //==============================================================
     // Privates
     //==============================================================
+    private char convertEnglishDigitToPersianIfIsDigit( char rtlChar) {
+        if(!mJustUseEnglishDigit && isEnglishDigit(rtlChar))
+            return RtlGlyph.getPersianDigit(rtlChar);
+        return rtlChar;
+    }
+    private char fixParenthesisAndBracketsRtl(char rtlChar) {
+        switch (rtlChar)
+        {
+            case ')' : return '('; case '(' : return ')';
+            case ']' : return '['; case '[' : return ']';
+            case '}' : return '{'; case '{' : return '}';
+            case '>' : return '<'; case '<' : return '>';
+        }
+        return rtlChar;
+    }
     private int appendPersian(int englishOffset, GlyphLayout.GlyphRun run, Array<BitmapFont.Glyph> persianGlyphs) {
 //        int j = 0;
 //        if(englishOffset == run.glyphs.size-1) j=run.glyphs.size;
