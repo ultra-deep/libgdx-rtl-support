@@ -23,7 +23,7 @@ public class MainScreen extends BaseScreen {
     private static final String WRAP_FULL_TEST_SEQUENCE = "فرمول آب H@2O است! آموزش زبان انگلیسی، مثل Hi, How are you آسان است. منظومه شمسی 1 خورشید دارد که (زمین) به دور آن 365 روز و 5.6 ساعت {طول} میکشد دور آن بچرخد.";
     private BitmapFont rtlBitmapFont;
     public MainScreen() {
-        BitmapFont rtlBitmapFont = this.createRtlBitmapFont();
+        rtlBitmapFont = this.createRtlBitmapFont();
     }
     @Override
     public void show() {
