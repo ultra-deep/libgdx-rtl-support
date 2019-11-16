@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StringBuilder;
 
 
 /**
@@ -53,15 +54,10 @@ public class RtlFreeTypeFontGenerator extends FreeTypeFontGenerator {
             @Override public BitmapFontCache newFontCache() {
                 return new BitmapFontCache(this, true){
                     @Override public void addText(GlyphLayout layout, float x, float y) {
-                        float first = 0;
-                        for (GlyphLayout.GlyphRun run : layout.runs)
+                        StringBuilder fullText = RtlController.getInstance().getFullTextFromLayout(layout);
+                        for (int i = 0; i < layout.runs.size; i++)
                         {
-                            RtlController.getInstance().reverse(run);
-                            for (int i = 1; i < run.glyphs.size; i++)
-                            {
-                                run.xAdvances.set(i,run.glyphs.get(i-1).xadvance);
-                            }
-                            run.xAdvances.set(0,layout.width - run.width);
+                            RtlController.getInstance().reverse(layout,i,fullText);
                         }
                         super.addText(layout, x, y);
                     }

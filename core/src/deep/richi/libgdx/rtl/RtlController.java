@@ -3,6 +3,8 @@ package deep.richi.libgdx.rtl;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BooleanArray;
+import com.badlogic.gdx.utils.ByteArray;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -18,6 +20,8 @@ public class RtlController {
             new MixedChars(RtlGlyph.LA__HAMZE_BOTTOM).isMixOf(RtlGlyph.LAM , RtlGlyph.A__HAMZE_BOTTOM),
             new MixedChars(RtlGlyph.LA__HAT_HOLDER).isMixOf(RtlGlyph.LAM , RtlGlyph.A__HAT_HOLDER),
     };
+    private static final StringBuilder BRACKETS = new StringBuilder("(){}[]<>");
+    private static final char EMPTY_CHARACTER = '\u1000';
     private static RtlController mInstance = null;
     private static final char SPACE_CHAR = 32;
     private boolean mIsEndLastCharacter;
@@ -47,9 +51,8 @@ public class RtlController {
         char currentChar = 0;
         char previousChar = 0;
         char nextChar = 0;
-        boolean isPersianContext = false;
         StringBuilder persianSequence = new StringBuilder();
-//        StringBuilder signeSequence = new StringBuilder();
+        ByteArray bracketsController = new ByteArray();
         for (int i = 0; i < text.length(); i++)
         {
             currentChar = getCharAt(text , i);
@@ -74,22 +77,20 @@ public class RtlController {
                 }
                 else
                 {
-                    // fixing digits and parenthesis and brackets before rtl  specification
-                    if(i >0 && rt.length == i && !isContainEnglishLetter(rt))
-                    {
-                        char c;
-                        for (int j = 0; j < rt.length; j++)
-                        {
-                            c = rt.charAt(j);
-                            c = convertEnglishDigitToPersianIfIsDigit(c);
-                            c = fixParenthesisAndBracketsRtl(c);
-                            rt.setCharAt(j,c);
-                        }
-                    }
+//                    // fixing digits and parenthesis and brackets before rtl  specification
+//                    if(i >0 && rt.length == i && !isContainEnglishLetter(rt))
+//                    {
+//                        char c;
+//                        for (int j = 0; j < rt.length; j++)
+//                        {
+//                            c = rt.charAt(j);
+//                            c = convertEnglishDigitToPersianIfIsDigit(c);
+//                            rt.setCharAt(j,c);
+//                        }
+//                    }
 
                     // add current rtl character to template sequence
                     rtlChar = convertEnglishDigitToPersianIfIsDigit(rtlChar);
-                    rtlChar = fixParenthesisAndBracketsRtl(rtlChar);
                     persianSequence.append(rtlChar);
                 }
             }
@@ -100,125 +101,232 @@ public class RtlController {
             rt.append(persianSequence);
         }
 
-        // fix text length if exist 'Mixed characters'
-        for (int i = rt.length; i < text.length(); i++)
+        fix_text_length_if_exist_mixedCharacters(rt , text);
+//        fix_persian_parenthesis_and_brackets(rt);
+
+        return rt;
+    }
+    public StringBuilder getFullTextFromLayout(GlyphLayout layout) {
+        StringBuilder rt = new StringBuilder();
+        for (int i = 0; i < layout.runs.size; i++)
         {
-//            rt.append('\u0000');
-            rt.append(' ');
+            for (int j = 0; j < layout.runs.get(i).glyphs.size; j++)
+            {
+                rt.append(layout.runs.get(i).glyphs.get(j));
+            }
         }
         return rt;
     }
     /**
      * reverse the glyphs for rendering rtl languages (Persian/Arabic)
-     * @param run
      */
-    public void reverse(GlyphLayout.GlyphRun run) {
-        Array<BitmapFont.Glyph> originGlyphs = new Array<>();
+    public void reverse(final GlyphLayout layout, int curRunIndex , final StringBuilder fullText) {
+        final Array<BitmapFont.Glyph> rt = new Array<>();
         Array<BitmapFont.Glyph> persianGlyphs = new Array<>();
-//        Array<BitmapFont.Glyph> englishGlyphs = new Array<>();
-
-        for (BitmapFont.Glyph glyph : run.glyphs) originGlyphs.add(glyph);
-        run.glyphs.clear();
+        final BooleanArray bracketIsEnglish = new BooleanArray();
         char c;
         int persianSequenceOffset = 0;
         BitmapFont.Glyph g;
+        BitmapFont.Glyph gFinal;
         int englishOffset = -1;
-        for (int i = 0; i < originGlyphs.size ; i++)
+        int bracketIndex;
+        boolean isEnglishBracket , isPersianBracket;
+        boolean isSeparatorCharacter_and_isEnglishSequence;
+        GlyphLayout.GlyphRun run = layout.runs.get(curRunIndex);
+        for (int i = 0; i < run.glyphs.size; i++)
         {
-            g = originGlyphs.get(i);
+            g = run.glyphs.get(i);
             c = (char) g.id;
-            if (isEnglishLetter(c)  || isSeparatorCharacter_and_isEnglishSequence(c , persianGlyphs) || isDigit_persian_or_english(c))
+            bracketIndex = isBracket(c);
+            if (c == EMPTY_CHARACTER || c ==0) continue;
+            isEnglishBracket = bracketIndex>=0 && !isPersianBracket(g,run.glyphs, i,bracketIsEnglish);
+            isPersianBracket = bracketIndex>=0 && isPersianBracket(g,run.glyphs, i,bracketIsEnglish);
+            isSeparatorCharacter_and_isEnglishSequence = isEnglishLetter(c) || (!isRtl(c) && persianGlyphs.isEmpty() && !isEnglishBracket) ;
+            if (!isPersianBracket && (isEnglishBracket || isSeparatorCharacter_and_isEnglishSequence || isDigit_persian_or_english(c)))
             {
-                if(!persianGlyphs.isEmpty())
+                if (!persianGlyphs.isEmpty())
                 {
-                    englishOffset = appendPersian(englishOffset,run,persianGlyphs);
+                    englishOffset = appendPersian(englishOffset, rt, persianGlyphs , !isRtlContext(layout,fullText,curRunIndex));
                 }
                 englishOffset++;
-                run.glyphs.insert(englishOffset,g);
+
+                if (bracketIndex >= 0)
+                {
+                    if (bracketIndex % 2 == 0) // if is opened bracket
+                    {
+//                        bracketsGlyphs.insert(0, null);
+                        bracketIsEnglish.insert(0,true);
+                        //                            bracketsGlyphs.insert(0,g);
+                    }
+                    else
+                    {
+                        if (bracketIsEnglish.size > 0)
+                        {
+                            if (englishOffset > 0 && !bracketIsEnglish.get(0))
+                            {
+                                englishOffset--;
+                            }
+//                            bracketsGlyphs.removeIndex(0);
+                            bracketIsEnglish.removeIndex(0);
+                        }
+                    }
+                }
+                rt.insert(englishOffset, g);
             }
             else // if  c  is Persian/Arabic letter then :
             {
-                persianGlyphs.add(g);
+                gFinal = g;
+                bracketIndex = isBracket(c);
+                if (bracketIndex >= 0)
+                {
+                    gFinal = findPersianBracketOf(bracketIndex, g, layout);
+                    if (bracketIndex % 2 == 0) // if is opened bracket
+                    {
+                        bracketIsEnglish.insert(0,false);
+                    }
+                    else
+                    {
+                        if (bracketIsEnglish.size > 0 && !bracketIsEnglish.get(0))
+                        {
+                            bracketIsEnglish.removeIndex(0);
+                        }
+                    }
+                }
+                persianGlyphs.add(gFinal);
             }
         }
 
-        if(!persianGlyphs.isEmpty())
+        if(!persianGlyphs.isEmpty())  appendPersian(englishOffset, rt, persianGlyphs,!isRtlContext(layout,fullText,curRunIndex));
+
+        run.glyphs.clear();
+        for (BitmapFont.Glyph glyph : rt) run.glyphs.add(glyph);
+
+        // fix xAdvanced value.
+        for (int i = 1; i < run.glyphs.size; i++)
         {
-            appendPersian(englishOffset, run, persianGlyphs);
+            run.xAdvances.set(i,run.glyphs.get(i-1).xadvance);
         }
+        run.xAdvances.set(0,layout.width - run.width);
     }
     //==============================================================
     // Privates
     //==============================================================
-    private char convertEnglishDigitToPersianIfIsDigit( char rtlChar) {
-        if(!mJustUseEnglishDigit && isEnglishDigit(rtlChar))
-            return RtlGlyph.getPersianDigit(rtlChar);
-        return rtlChar;
-    }
-    private char fixParenthesisAndBracketsRtl(char rtlChar) {
-        switch (rtlChar)
+    private boolean isRtlContext(GlyphLayout layout, StringBuilder fulltext, int curRunIndex) {
+        int curIndex = 0;
+        for (int i = 0; i < curRunIndex; i++)
         {
-            case ')' : return '('; case '(' : return ')';
-            case ']' : return '['; case '[' : return ']';
-            case '}' : return '{'; case '{' : return '}';
-            case '>' : return '<'; case '<' : return '>';
+            curIndex += layout.runs.get(i).glyphs.size;
         }
-        return rtlChar;
-    }
-    private int appendPersian(int englishOffset, GlyphLayout.GlyphRun run, Array<BitmapFont.Glyph> persianGlyphs) {
-//        int j = 0;
-//        if(englishOffset == run.glyphs.size-1) j=run.glyphs.size;
-//    else
-        if(englishOffset > 0 && run.glyphs.get(englishOffset).id == SPACE_CHAR)
+        for (int i = curIndex; i >= 0; i--)
         {
-            run.glyphs.insert(0,run.glyphs.get(englishOffset));
-            run.glyphs.removeIndex(englishOffset+1);
+            if (fulltext.charAt(curIndex) == '\n' || i == 0)
+            {
+                while (i < fulltext.length)
+                {
+                    if(isRtl(fulltext.charAt(i)))
+                    {
+                        return true;
+                    }
+                    else if(isEnglishLetter(fulltext.charAt(i)))
+                    {
+                        return false;
+                    }
+                    i++;
+                }
+                break;
+            }
         }
 
-        for (int i = 0; i < persianGlyphs.size; i++)
-        {
-            run.glyphs.insert(0,persianGlyphs.get(i));
-        }
-        persianGlyphs.clear();
-        return -1;
+        return false;
     }
-    private boolean isSeparatorCharacter_and_isEnglishSequence(char c, Array<BitmapFont.Glyph> persianGlyphs) {
-        return (!isRtl(c) && persianGlyphs.isEmpty());
-    }
-    private void convertEnglishDigitToPersian(StringBuilder text) {
-        for (int i = 0; i < text.length; i++)
+    private boolean isPersianBracket(BitmapFont.Glyph g, Array<BitmapFont.Glyph> originGlyphs, int index, BooleanArray bracketIsEnglish) {
+        int indexOfBracket = isBracket((char) g.id);
+        if(indexOfBracket >= 0) // if ( isBracket )
         {
-            if (isEnglishDigit(text.charAt(i)))
+            if(indexOfBracket %2 ==0) // if (is opened bracket)
             {
-                text.chars[i] = RtlGlyph.getPersianDigit(text.charAt(i));
+                return !isEnglishBracket(originGlyphs,index);
             }
-        }
-    }
-    private void convertEnglishParenthesisPersian(StringBuilder text) {
-        if (text.length == 1)
-        {
-            for (int i = 0; i < text.length; i++)
+            else
             {
-                if (text.charAt(i) == '(')
-                {
-                    text.chars[i] = ')';
-                }
-                else if (text.charAt(i) == ')')
-                {
-                    text.chars[i] = '(';
-                }
-            }
-        }
-    }
-    private boolean isContainEnglishLetter(StringBuilder textContainEnglishLetterAndMaybePersianDigits) {
-        for (int i = 0; i < textContainEnglishLetterAndMaybePersianDigits.length; i++)
-        {
-            if (isEnglishLetter(textContainEnglishLetterAndMaybePersianDigits.charAt(i)))
-            {
-                return true;
+                return bracketIsEnglish.size>0 && !bracketIsEnglish.get(0);
             }
         }
         return false;
+    }
+    private BitmapFont.Glyph findPersianBracketOf(int bracketIndex, BitmapFont.Glyph g, GlyphLayout layout) {
+        if(bracketIndex % 2 ==0) bracketIndex++; else  bracketIndex--;
+        BitmapFont.Glyph glyph;
+        for (int i = 0; i < layout.runs.size; i++)
+        {
+            for (int j = 0; j < layout.runs.get(i).glyphs.size; j++)
+            {
+                glyph = layout.runs.get(i).glyphs.get(j);
+                if( glyph.id == BRACKETS.charAt(bracketIndex))
+                {
+                    return glyph;
+                }
+            }
+        }
+        return g;
+    }
+    private void fix_text_length_if_exist_mixedCharacters(StringBuilder rt, CharSequence text) {
+        for (int i = rt.length; i < text.length(); i++)
+        {
+//            rt.append('\u0000');
+//            rt.append(' ');
+            rt.append(EMPTY_CHARACTER);
+        }
+    }
+    private int isBracket(char c) {
+        for (int i = 0; i < BRACKETS.length; i++)
+        {
+            if(c == BRACKETS.charAt(i)) return i;
+        }
+        return -1;
+    }
+    private boolean isEnglishBracket(Array<BitmapFont.Glyph>  glyphs, int index) {
+        char c;
+        for (int i = index-1; i >= 0; i--)
+        {
+            c = (char) glyphs.get(i).id;
+            if(isEnglishLetter(c)) return true;
+            if(isRtl(c)) return false;
+        }
+        for (int i = index+1; i < glyphs.size; i++)
+        {
+            c = (char) glyphs.get(i).id;
+            if(isEnglishLetter(c)) return true;
+            if(isRtl(c)) return false;
+        }
+
+        return false;
+    }
+    private char convertEnglishDigitToPersianIfIsDigit(char rtlChar) {
+        if(!mJustUseEnglishDigit && isEnglishDigit(rtlChar))
+        {
+            return RtlGlyph.getPersianDigit(rtlChar);
+        }
+        return rtlChar;
+    }
+    private int appendPersian(int englishOffset, Array<BitmapFont.Glyph> rtGlyphs, Array<BitmapFont.Glyph> persianGlyphs , boolean isEnglishContext) {
+        int rt = -1;
+        // fix space character location
+        if(englishOffset > 0 && rtGlyphs.get(englishOffset).id == SPACE_CHAR)
+        {
+            rtGlyphs.insert(0,rtGlyphs.get(englishOffset));
+            rtGlyphs.removeIndex(englishOffset+1);
+        }
+        int indexForAdd = 0;
+        if(isEnglishContext)  indexForAdd = rtGlyphs.size;
+        for (int i = 0; i < persianGlyphs.size; i++)
+        {
+            rtGlyphs.insert(indexForAdd,persianGlyphs.get(i));
+        }
+        if(isEnglishContext) rt= rtGlyphs.size-1;
+        persianGlyphs.clear();
+
+        return rt;
     }
     private boolean isPersianDigit(char c) {
         return (c >= RtlGlyph.PERSIAN_DIGIT_0.getPrimary() && c <= RtlGlyph.PERSIAN_DIGIT_9.getPrimary()) || (c >= RtlGlyph.PERSIAN_DIGIT__0.getPrimary() && c <= RtlGlyph.PERSIAN_DIGIT__9.getPrimary());
