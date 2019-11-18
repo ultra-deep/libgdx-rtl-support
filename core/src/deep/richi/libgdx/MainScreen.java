@@ -30,22 +30,18 @@ public class MainScreen extends BaseScreen {
     public MainScreen() {
         rtlBitmapFont = this.createRtlBitmapFont();
     }
-    @Override
-    public void show() {
+    @Override public void show() {
         super.show();
-
 
         Label einsteinLabel = new Label(EINSTEIN_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
 //        Label einsteinLabel = new Label("A (B) C (فارسی) D...", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
 //        Label einsteinLabel = new Label("برای بدست آوردن sin(x) ابتدا باید...", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//        Label einsteinLabel = new Label("این ((ss)s) است", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
+//        Label einsteinLabel = new Label("این ({", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
         einsteinLabel.setWrap(true);
         einsteinLabel.setWidth(900);
         einsteinLabel.setX(50);
         einsteinLabel.setY(450);
         stage.addActor(einsteinLabel);
-
-
 
         Label fullTestLabel = new Label(WRAP_FULL_TEST_SEQUENCE, new Label.LabelStyle(rtlBitmapFont, Color.WHITE));
         fullTestLabel.setWrap(true);
@@ -53,7 +49,7 @@ public class MainScreen extends BaseScreen {
         fullTestLabel.setX(100);
         fullTestLabel.setY(200);
         stage.addActor(fullTestLabel);
-//
+
         TextArea.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = rtlBitmapFont;
         style.fontColor = Color.YELLOW;

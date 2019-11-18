@@ -77,18 +77,6 @@ public class RtlController {
                 }
                 else
                 {
-//                    // fixing digits and parenthesis and brackets before rtl  specification
-//                    if(i >0 && rt.length == i && !isContainEnglishLetter(rt))
-//                    {
-//                        char c;
-//                        for (int j = 0; j < rt.length; j++)
-//                        {
-//                            c = rt.charAt(j);
-//                            c = convertEnglishDigitToPersianIfIsDigit(c);
-//                            rt.setCharAt(j,c);
-//                        }
-//                    }
-
                     // add current rtl character to template sequence
                     rtlChar = convertEnglishDigitToPersianIfIsDigit(rtlChar);
                     persianSequence.append(rtlChar);
@@ -102,7 +90,7 @@ public class RtlController {
         }
 
         fix_text_length_if_exist_mixedCharacters(rt , text);
-//        fix_persian_parenthesis_and_brackets(rt);
+        fix_persian_parenthesis_and_brackets(rt);
 
         return rt;
     }
@@ -139,8 +127,8 @@ public class RtlController {
             c = (char) g.id;
             bracketIndex = isBracket(c);
             if (c == EMPTY_CHARACTER || c ==0) continue;
-            isEnglishBracket = bracketIndex>=0 && !isPersianBracket(g,run.glyphs, i,bracketIsEnglish);
-            isPersianBracket = bracketIndex>=0 && isPersianBracket(g,run.glyphs, i,bracketIsEnglish);
+            isEnglishBracket = bracketIndex>=0 && !isPersianBracket(g,fullText, i,bracketIsEnglish);
+            isPersianBracket = bracketIndex>=0 && isPersianBracket(g,fullText, i,bracketIsEnglish);
             isSeparatorCharacter_and_isEnglishSequence = isEnglishLetter(c) || (!isRtl(c) && persianGlyphs.isEmpty() && !isEnglishBracket) ;
             if (!isPersianBracket && (isEnglishBracket || isSeparatorCharacter_and_isEnglishSequence || isDigit_persian_or_english(c)))
             {
@@ -211,6 +199,79 @@ public class RtlController {
     //==============================================================
     // Privates
     //==============================================================
+    private void fix_persian_parenthesis_and_brackets(final StringBuilder rt) {
+
+        find_index_of_exist_alone_bracket_character(rt, new OnAloneBracket() {
+            @Override public void onAloneBracket(int bracketIndex) {
+                int anotherBracketIndex = getAnOtherBracketIndex(bracketIndex);
+                boolean isEnglishBracket;
+                if(!rt.contains(BRACKETS.charAt(anotherBracketIndex) + ""))
+                {
+                    for (int i = 0; i < rt.length; i++)
+                    {
+                        if (rt.charAt(i) == BRACKETS.charAt(bracketIndex))
+                        {
+                            isEnglishBracket = isEnglishBracket(rt, i);
+                            if (!isEnglishBracket)
+                            {
+                                rt.setCharAt(i,(BRACKETS.charAt(anotherBracketIndex)));
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+//        CharArray brackets = new CharArray();
+//        BooleanArray isEnglishBrackets = new BooleanArray();
+//        boolean isEnglishBracket;
+//        for (int i = 0; i < rt.length; i++)
+//        {
+//            for (int j = 0; j < BRACKETS.length; j++)
+//            {
+//                if (rt.charAt(i) == BRACKETS.charAt(j))
+//                {
+//                    isEnglishBracket = isEnglishBracket(rt,i);
+//                    if( j % 2 ==0) // if bracket opened then
+//                    {
+//                        brackets.insert(0,BRACKETS.charAt(j));
+//                        isEnglishBrackets.insert(0,isEnglishBracket);
+//                        if (!isEnglishBracket)
+//                        {
+//                            rt.setCharAt(i, (char) (BRACKETS.charAt(j + 1)));
+//                            //                            rt.insert(i+1, PERSIAN_BRACKETS_CHAR);
+//                        }
+//                    }
+//                    else // if closed the bracket
+//                    {
+//                        if(!isEnglishBrackets.get(0))
+//                        {
+//                            rt.setCharAt(i, (char) (BRACKETS.charAt(j-1)));
+//                            //                            rt.insert(i+1, PERSIAN_BRACKETS_CHAR);
+//                        }
+//                        brackets.removeIndex(0);
+//                        isEnglishBrackets.removeIndex(0);
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+    }
+    private int getAnOtherBracketIndex(int bracketIndex) {
+        return bracketIndex%2 ==0? bracketIndex+1:bracketIndex-1;
+    }
+    private void find_index_of_exist_alone_bracket_character(StringBuilder fullText , OnAloneBracket onAloneBracket) {
+        int c = 0;
+        for (int bracketIndex = 0; bracketIndex < BRACKETS.length; bracketIndex+=2)
+        {
+            if (isAloneBracket(bracketIndex,fullText))
+            {
+                onAloneBracket.onAloneBracket(bracketIndex);
+            }
+        }
+    }
     private boolean isRtlContext(GlyphLayout layout, StringBuilder fulltext, int curRunIndex) {
         int curIndex = 0;
         for (int i = 0; i < curRunIndex; i++)
@@ -239,20 +300,44 @@ public class RtlController {
 
         return false;
     }
-    private boolean isPersianBracket(BitmapFont.Glyph g, Array<BitmapFont.Glyph> originGlyphs, int index, BooleanArray bracketIsEnglish) {
-        int indexOfBracket = isBracket((char) g.id);
-        if(indexOfBracket >= 0) // if ( isBracket )
+    private boolean isPersianBracket(BitmapFont.Glyph g,StringBuilder fullText , int index, BooleanArray bracketIsEnglish) {
+        Array<BitmapFont.Glyph> originGlyphs;
+        int bracketIndex = isBracket((char) g.id);
+        if(bracketIndex >= 0) // if ( isBracket )
         {
-            if(indexOfBracket %2 ==0) // if (is opened bracket)
+            if(bracketIndex %2 ==0) // if (is opened bracket)
             {
-                return !isEnglishBracket(originGlyphs,index);
+                return !isEnglishBracket(fullText,index);
             }
             else
             {
-                return bracketIsEnglish.size>0 && !bracketIsEnglish.get(0);
+                if(isAloneBracket(bracketIndex,fullText))
+                {
+                    return !isEnglishBracket(fullText,index);
+                }
+                else
+                {
+                    return bracketIsEnglish.size>0 && !bracketIsEnglish.get(0);
+                }
             }
         }
         return false;
+    }
+    private boolean isAloneBracket(int bracketIndex, StringBuilder fullText) {
+        int balance = 0;
+        int anotherBracketIndex = getAnOtherBracketIndex(bracketIndex);
+        for (int i = 0; i < fullText.length; i++)
+        {
+            if (fullText.charAt(i) == BRACKETS.charAt(bracketIndex))
+            {
+                balance++;
+            }
+            else if (fullText.charAt(i) == BRACKETS.charAt(anotherBracketIndex))
+            {
+                balance--;
+            }
+        }
+        return balance != 0;
     }
     private BitmapFont.Glyph findPersianBracketOf(int bracketIndex, BitmapFont.Glyph g, GlyphLayout layout) {
         if(bracketIndex % 2 ==0) bracketIndex++; else  bracketIndex--;
@@ -301,6 +386,22 @@ public class RtlController {
         }
 
         return false;
+    }
+    private boolean isEnglishBracket(StringBuilder rt , int index) {
+        char c;
+        for (int i = index-1; i > 0; i--)
+        {
+            c = rt.charAt(i);
+            if(isEnglishLetter(c)) return true;
+            if(isRtl(c)) return false;
+        }
+        for (int i = index+1; i < rt.length; i++)
+        {
+            c = rt.charAt(i);
+            if(isEnglishLetter(c)) return true;
+            if(isRtl(c)) return false;
+        }
+        return true;
     }
     private char convertEnglishDigitToPersianIfIsDigit(char rtlChar) {
         if(!mJustUseEnglishDigit && isEnglishDigit(rtlChar))
@@ -525,6 +626,7 @@ public class RtlController {
             return this;
         }
     }
+    private interface OnAloneBracket { public void onAloneBracket(int bracketIndex); }
     //==============================================================
     // Statics
     //==============================================================
