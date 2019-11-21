@@ -119,8 +119,9 @@ public class RtlController {
         int englishOffset = -1;
         int bracketIndex;
         boolean isEnglishBracket , isPersianBracket;
-        boolean isSeparatorCharacter_and_isEnglishSequence;
+        boolean isSeparatorCharacter_and_isEnglishSequence, isEnglishContext ;
         GlyphLayout.GlyphRun run = layout.runs.get(curRunIndex);
+
         for (int i = 0; i < run.glyphs.size; i++)
         {
             g = run.glyphs.get(i);
@@ -134,7 +135,8 @@ public class RtlController {
             {
                 if (!persianGlyphs.isEmpty())
                 {
-                    englishOffset = appendPersian(englishOffset, rt, persianGlyphs , !isRtlContext(layout,fullText,curRunIndex));
+                    isEnglishContext = !isRtlContext(layout,fullText,curRunIndex);
+                    englishOffset = appendPersian(englishOffset, rt, persianGlyphs , isEnglishContext);
                 }
                 englishOffset++;
 
@@ -359,8 +361,8 @@ public class RtlController {
         for (int i = rt.length; i < text.length(); i++)
         {
 //            rt.append('\u0000');
-//            rt.append(' ');
-            rt.append(EMPTY_CHARACTER);
+            rt.append(' ');
+//            rt.append(EMPTY_CHARACTER);
         }
     }
     private int isBracket(char c) {
@@ -412,12 +414,22 @@ public class RtlController {
     }
     private int appendPersian(int englishOffset, Array<BitmapFont.Glyph> rtGlyphs, Array<BitmapFont.Glyph> persianGlyphs , boolean isEnglishContext) {
         int rt = -1;
-        // fix space character location
-        if(englishOffset > 0 && rtGlyphs.get(englishOffset).id == SPACE_CHAR)
+        if(!isEnglishContext && rtGlyphs.size > 0 && rtGlyphs.get(englishOffset).id == SPACE_CHAR)
         {
             rtGlyphs.insert(0,rtGlyphs.get(englishOffset));
             rtGlyphs.removeIndex(englishOffset+1);
         }
+        // fix space character location
+        if(isEnglishContext && persianGlyphs.size > 0 && persianGlyphs.get(persianGlyphs.size-1).id == SPACE_CHAR)
+        {
+            persianGlyphs.insert(0,persianGlyphs.get(persianGlyphs.size-1));
+            persianGlyphs.removeIndex(persianGlyphs.size-1);
+        }
+//        if(englishOffset > 0 && rtGlyphs.get(englishOffset).id == SPACE_CHAR)
+//        {
+//            rtGlyphs.insert(0,rtGlyphs.get(englishOffset));
+//            rtGlyphs.removeIndex(englishOffset+1);
+//        }
         int indexForAdd = 0;
         if(isEnglishContext)  indexForAdd = rtGlyphs.size;
         for (int i = 0; i < persianGlyphs.size; i++)

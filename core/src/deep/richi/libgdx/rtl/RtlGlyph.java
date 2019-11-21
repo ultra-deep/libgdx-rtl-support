@@ -104,7 +104,7 @@ enum RtlGlyph {
     /** Primary char : ه <br /> Start char : ﻫ <br /> Center char : ﻬ <br /> End char : ﻪ */ H__EYES(0x647, 0xfeeb, 0xfeec, 0xfeea),
     //------------------------------------------------------------------------------------------------------------------------------------------------------------
     /** Primary char : ي <br /> Start char : ﻳ <br /> Center char : ﻴ <br /> End char :  */ Y__2_DOT(0x64a, 0xfef3, 0xfef4, 0xfef2),
-    /** Primary char : ی <br /> Start char : ﯾ <br /> Center char : ﯿ <br /> End char :  */ Y(0x6cc, 0xfbfe, 0xfbff, 0xfbfd),;
+    /** Primary char : ی <br /> Start char : ﯾ <br /> Center char : ﯿ <br /> End char :  */ Y(0x6cc, 0xfbfe, 0xfbff, 0xfbfd),
     ;
     //==============================================================
     // Fields and Const

@@ -36,7 +36,9 @@ public class MainScreen extends BaseScreen {
         Label einsteinLabel = new Label(EINSTEIN_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
 //        Label einsteinLabel = new Label("A (B) C (فارسی) D...", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
 //        Label einsteinLabel = new Label("برای بدست آوردن sin(x) ابتدا باید...", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//        Label einsteinLabel = new Label("این ({", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
+//        Label einsteinLabel = new Label("This is (a) test", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
+//                Label einsteinLabel = new Label("A این B نیست", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
+//        Label einsteinLabel = new Label("این  aa A است و Bs ss ss نیست", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
         einsteinLabel.setWrap(true);
         einsteinLabel.setWidth(900);
         einsteinLabel.setX(50);
@@ -51,9 +53,12 @@ public class MainScreen extends BaseScreen {
         stage.addActor(fullTestLabel);
 
         TextArea.TextFieldStyle style = new TextField.TextFieldStyle();
-        style.font = rtlBitmapFont;
-        style.fontColor = Color.YELLOW;
-        TextField textField = new TextField("نام خود را وارد کنید...", style);
+        style.font = createRtlBitmapFontForTextField();
+        style.fontColor = Color.BLACK;
+        style.disabledFontColor = Color.LIGHT_GRAY;
+        style.messageFontColor = Color.LIGHT_GRAY;
+        TextField textField = new TextField("", style);
+        textField.setMessageText("نام خود را وارد کنید...");
         textField.setDebug(true); // showing debug lines
         textField.setSize(SCREEN_WIDTH - 100, 80);
         changeBackgroundForFor(textField , Color.WHITE);
@@ -72,6 +77,7 @@ public class MainScreen extends BaseScreen {
         textField.getStyle().background = new Image(new Texture(labelColor)).getDrawable();
     }
     private BitmapFont createRtlBitmapFont() {
+//        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/aaa.ttf"));
         RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Sarbaz.ttf"));
 //        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/IRANSansMobile_Medium.ttf"));
 //        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Parvin-Regular.ttf"));
@@ -87,6 +93,14 @@ public class MainScreen extends BaseScreen {
         param.shadowOffsetY = +5;
         param.minFilter = Texture.TextureFilter.Nearest;
         param.magFilter = Texture.TextureFilter.Nearest;
+        return generator.generateRtlFont(param);
+    }
+    private BitmapFont createRtlBitmapFontForTextField() {
+        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/IRANSansMobile_Medium.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        param.characters += RtlController.getInstance().getAllRtlChars();
+        param.size = 40;
+        param.color = Color.WHITE;
         return generator.generateRtlFont(param);
     }
 }
