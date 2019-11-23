@@ -13,8 +13,8 @@ import com.badlogic.gdx.utils.StringBuilder;
  * @author Richi on 10/28/19.
  */
 public class RtlController {
-    private static final RtlGlyph ALL_CHARS[] = RtlGlyph.values();
-    public static final MixedChars MIXED_CHARS[] = new MixedChars[] {
+    private static final RtlGlyph[] ALL_CHARS = RtlGlyph.values();
+    public static final MixedChars[] MIXED_CHARS = new MixedChars[] {
             new MixedChars(RtlGlyph.LA).isMixOf(RtlGlyph.LAM , RtlGlyph.A__SIMPLE),
             new MixedChars(RtlGlyph.LA__HAMZE_TOP).isMixOf(RtlGlyph.LAM , RtlGlyph.A__HAMZE_TOP),
             new MixedChars(RtlGlyph.LA__HAMZE_BOTTOM).isMixOf(RtlGlyph.LAM , RtlGlyph.A__HAMZE_BOTTOM),
@@ -35,7 +35,7 @@ public class RtlController {
         {
             for (char character : glyph.getAllLetters().items)
             {
-                if (!array.contains((char) character))  array.add(character);
+                if (!array.contains(character))  array.add(character);
             }
         }
         return array;
@@ -47,10 +47,10 @@ public class RtlController {
         mIsEndLastCharacter = true;
         mJustUseEnglishDigit = justUseEnglishDigit;
         StringBuilder rt = new StringBuilder();
-        char rtlChar = 0;
-        char currentChar = 0;
-        char previousChar = 0;
-        char nextChar = 0;
+        char rtlChar;
+        char currentChar;
+        char previousChar;
+        char nextChar;
         StringBuilder persianSequence = new StringBuilder();
         ByteArray bracketsController = new ByteArray();
         for (int i = 0; i < text.length(); i++)
@@ -66,7 +66,7 @@ public class RtlController {
             }
             else
             {
-                if (isEnglishLetter(rtlChar) || (!isRtl(rtlChar) && persianSequence.length == 0))
+                if (!isDigitInPersianContext(i,text) && (isEnglishLetter(rtlChar) || (!isRtl(rtlChar) && persianSequence.length == 0)))
                 {
                     if (persianSequence.length != 0)
                     {
@@ -201,6 +201,16 @@ public class RtlController {
     //==============================================================
     // Privates
     //==============================================================
+    private boolean isDigitInPersianContext(int index, CharSequence text) {
+        if(isEnglishDigit(text.charAt(index)))
+        {
+            for (int i = index +1; i < text.length(); i++)
+            {
+                if(isRtl(text.charAt(i))) return true; else if(isEnglishLetter(text.charAt(i))) return false;
+            }
+        }
+        return false;
+    }
     private void fix_persian_parenthesis_and_brackets(final StringBuilder rt) {
 
         find_index_of_exist_alone_bracket_character(rt, new OnAloneBracket() {
