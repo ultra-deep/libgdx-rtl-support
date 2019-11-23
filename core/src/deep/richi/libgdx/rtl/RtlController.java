@@ -425,11 +425,6 @@ public class RtlController {
             persianGlyphs.insert(0,persianGlyphs.get(persianGlyphs.size-1));
             persianGlyphs.removeIndex(persianGlyphs.size-1);
         }
-//        if(englishOffset > 0 && rtGlyphs.get(englishOffset).id == SPACE_CHAR)
-//        {
-//            rtGlyphs.insert(0,rtGlyphs.get(englishOffset));
-//            rtGlyphs.removeIndex(englishOffset+1);
-//        }
         int indexForAdd = 0;
         if(isEnglishContext)  indexForAdd = rtGlyphs.size;
         for (int i = 0; i < persianGlyphs.size; i++)

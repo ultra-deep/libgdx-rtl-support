@@ -22,7 +22,7 @@ import deep.richi.libgdx.rtl.RtlFreeTypeFontGenerator;
 public class MainScreen extends BaseScreen {
 
     private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n با آروزی متلاشی شدن حکومت اسلامی و تمامی حکومت های مذهبی و غیر علمی";
-    private static final String WRAP_FULL_TEST_SEQUENCE = "فرمول آب H2O است! آموزش زبان انگلیسی، مثل Hi, How are you آسان است. عمر سیاره (زمین) 4.6 ملیارد {سال} است. حرکت و شتاب باعث خم شدن space-time یعنی (sp) میشوند.";
+    private static final String WRAP_FULL_TEST_SEQUENCE = "فرمول آب H2O است! آموزش زبان انگلیسی، مثل Hi, How are you آسان است. عمر سیاره (زمین) 4.6 ملیارد {سال} است. حرکت و شتاب باعث خم شدن فضا-زمان یعنی (space-time) میشوند.";
     private BitmapFont rtlBitmapFont;
     //==============================================================
     // METHODS
@@ -77,7 +77,6 @@ public class MainScreen extends BaseScreen {
         textField.getStyle().background = new Image(new Texture(labelColor)).getDrawable();
     }
     private BitmapFont createRtlBitmapFont() {
-//        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/aaa.ttf"));
         RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Sarbaz.ttf"));
 //        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/IRANSansMobile_Medium.ttf"));
 //        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Parvin-Regular.ttf"));
