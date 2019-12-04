@@ -21,7 +21,7 @@ import deep.richi.libgdx.rtl.RtlFreeTypeFontGenerator;
  */
 public class MainScreen extends BaseScreen {
 
-    private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n با آروزی متلاشی شدن حکومت اسلامی و تمامی حکومت های مذهبی و غیر علمی";
+    private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n با آروزی پیشرفت حکومتها و کشورهای علمی مثل آمریکا و کشورهای اروپایی و ...";
     private static final String WRAP_FULL_TEST_SEQUENCE = "فرمول آب H2O است! آموزش زبان انگلیسی، مثل Hi, How are you آسان است. عمر سیاره (زمین) 4.6 ملیارد {سال} است. حرکت و شتاب باعث خم شدن فضا-زمان یعنی (space-time) میشوند.";
     private BitmapFont rtlBitmapFont;
     //==============================================================
@@ -34,11 +34,6 @@ public class MainScreen extends BaseScreen {
         super.show();
 
         Label einsteinLabel = new Label(EINSTEIN_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//        Label einsteinLabel = new Label("A (B) C (فارسی) D...", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//        Label einsteinLabel = new Label("برای بدست آوردن sin(x) ابتدا باید...", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//        Label einsteinLabel = new Label("This is (a) test", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//                Label einsteinLabel = new Label("A این B نیست", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
-//        Label einsteinLabel = new Label("این  aa A است و Bs ss ss نیست", new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
         einsteinLabel.setWrap(true);
         einsteinLabel.setWidth(900);
         einsteinLabel.setX(50);
