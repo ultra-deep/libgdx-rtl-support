@@ -21,7 +21,9 @@ import deep.richi.libgdx.rtl.RtlFreeTypeFontGenerator;
  */
 public class MainScreen extends BaseScreen {
 
+    private static final String JUST_ENGLISH_TEXT = "This is a demo implementation of a simple VPN to send data from one computer to another over a protected channel. The channel establishes a shared secret key using the Diffie Hellman key exchange.";
     private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n با آروزی پیشرفت حکومتها و کشورهای علمی مثل آمریکا و کشورهای اروپایی و ...";
+//    private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n I Love science countries like USA and Europe countries that underestand and develope the SCIENCE...";
     private static final String WRAP_FULL_TEST_SEQUENCE = "فرمول آب H2O است! آموزش زبان انگلیسی، مثل Hi, How are you آسان است. عمر سیاره (زمین) 4.6 ملیارد {سال} است. حرکت و شتاب باعث خم شدن فضا-زمان یعنی (space-time) میشوند.";
     private BitmapFont rtlBitmapFont;
     //==============================================================
@@ -35,14 +37,19 @@ public class MainScreen extends BaseScreen {
 
         Label einsteinLabel = new Label(EINSTEIN_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
         einsteinLabel.setWrap(true);
+        einsteinLabel.debug();
         einsteinLabel.setWidth(900);
         einsteinLabel.setX(50);
         einsteinLabel.setY(450);
+        einsteinLabel.setAlignment(Align.left);
         stage.addActor(einsteinLabel);
 
         Label fullTestLabel = new Label(WRAP_FULL_TEST_SEQUENCE, new Label.LabelStyle(rtlBitmapFont, Color.WHITE));
+//        Label fullTestLabel = new Label(JUST_ENGLISH_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.WHITE));
+        fullTestLabel.debug();
         fullTestLabel.setWrap(true);
         fullTestLabel.setWidth(900);
+        fullTestLabel.setAlignment(Align.left);
         fullTestLabel.setX(100);
         fullTestLabel.setY(200);
         stage.addActor(fullTestLabel);
@@ -87,7 +94,7 @@ public class MainScreen extends BaseScreen {
         param.shadowOffsetY = +5;
         param.minFilter = Texture.TextureFilter.Nearest;
         param.magFilter = Texture.TextureFilter.Nearest;
-        return generator.generateRtlFont(param);
+        return generator.generateFont(param);
     }
     private BitmapFont createRtlBitmapFontForTextField() {
         RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/IRANSansMobile_Medium.ttf"));
@@ -95,6 +102,6 @@ public class MainScreen extends BaseScreen {
         param.characters += RtlController.getInstance().getAllRtlChars();
         param.size = 40;
         param.color = Color.WHITE;
-        return generator.generateRtlFont(param);
+        return generator.generateFont(param);
     }
 }

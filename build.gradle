@@ -39,7 +39,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -82,8 +81,6 @@ project(":android") {
 project(":ios") {
     apply plugin: "java-library"
     apply plugin: "robovm"
-
-
     dependencies {
         implementation project(":core")
         api "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"

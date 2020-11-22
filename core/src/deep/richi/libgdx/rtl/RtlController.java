@@ -196,7 +196,7 @@ public class RtlController {
         {
             run.xAdvances.set(i,run.glyphs.get(i-1).xadvance);
         }
-        run.xAdvances.set(0,layout.width - run.width);
+//        run.xAdvances.set(0,layout.width - run.width);
     }
     //==============================================================
     // Privates

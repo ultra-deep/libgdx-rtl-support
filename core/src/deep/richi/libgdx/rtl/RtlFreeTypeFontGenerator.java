@@ -65,9 +65,12 @@ public class RtlFreeTypeFontGenerator extends FreeTypeFontGenerator {
             }
         };
     }
-    public BitmapFont generateRtlFont(FreeTypeFontParameter parameters) {
-        return generateFont(parameters , new RtlFreeTypeFontGenerator.RtlFreeTypeBitmapFontData());
+    @Override public BitmapFont generateFont(FreeTypeFontParameter parameter) {
+        return generateFont(parameter , new RtlFreeTypeFontGenerator.RtlFreeTypeBitmapFontData());
     }
+//    public BitmapFont generateRtlFont(FreeTypeFontParameter parameter) {
+//        return generateFont(parameter , new RtlFreeTypeFontGenerator.RtlFreeTypeBitmapFontData());
+//    }
     /***
      * {@link com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData} + Supported RTL fonts
      * @see FreeTypeBitmapFontData
