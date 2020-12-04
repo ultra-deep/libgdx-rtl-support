@@ -22,7 +22,7 @@ import deep.richi.libgdx.rtl.RtlFreeTypeFontGenerator;
 public class MainScreen extends BaseScreen {
 
     private static final String JUST_ENGLISH_TEXT = "This is a demo implementation of a simple VPN to send data from one computer to another over a protected channel. The channel establishes a shared secret key using the Diffie Hellman key exchange.";
-    private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n با آروزی پیشرفت حکومتها و کشورهای علمی مثل آمریکا و کشورهای اروپایی و ...";
+    private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده‌ای.\n (اینشتین)\n\n با آروزی پیشرفت حکومتها و کشورهای علمی مثل آمریکا و کشورهای اروپایی و ...";
 //    private static final String EINSTEIN_TEXT = "اگر نتوانی چیزی را به سادگی برای کسی توضیح دهی، خودت هم آن چیز را به خوبی درک نکرده ای.\n (اینشتین)\n\n I Love science countries like USA and Europe countries that underestand and develope the SCIENCE...";
     private static final String WRAP_FULL_TEST_SEQUENCE = "فرمول آب H2O است! آموزش زبان انگلیسی، مثل Hi, How are you آسان است. عمر سیاره (زمین) 4.6 ملیارد {سال} است. حرکت و شتاب باعث خم شدن فضا-زمان یعنی (space-time) میشوند.";
     private BitmapFont rtlBitmapFont;
@@ -79,7 +79,7 @@ public class MainScreen extends BaseScreen {
         textField.getStyle().background = new Image(new Texture(labelColor)).getDrawable();
     }
     private BitmapFont createRtlBitmapFont() {
-        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Sarbaz.ttf"));
+        FreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Sarbaz.ttf"));
 //        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/IRANSansMobile_Medium.ttf"));
 //        RtlFreeTypeFontGenerator generator = new RtlFreeTypeFontGenerator(Gdx.files.internal("fonts/Parvin-Regular.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();

@@ -78,8 +78,6 @@ public class RtlFreeTypeFontGenerator extends FreeTypeFontGenerator {
     public static class RtlFreeTypeBitmapFontData extends FreeTypeBitmapFontData {
         @Override public void getGlyphs(GlyphLayout.GlyphRun run, CharSequence strRaw, int start, int end, BitmapFont.Glyph lastGlyph) {
             CharSequence str = RtlController.getInstance().getRtl(strRaw);
-//            if(start > str.length()) start = str.length();
-//            if(end > str.length()) end = str.length();
             super.getGlyphs(run, str, start, end, lastGlyph);
         }
     }

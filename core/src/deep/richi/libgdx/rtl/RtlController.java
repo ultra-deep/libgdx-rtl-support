@@ -23,7 +23,7 @@ public class RtlController {
     private static final StringBuilder BRACKETS = new StringBuilder("(){}[]<>");
     private static final char EMPTY_CHARACTER = '\u1000';
     private static RtlController mInstance = null;
-    private static final char SPACE_CHAR = 32;
+    private static final char[] SPACE_CHARS = new char[] {32, (char)RtlGlyph.VIRTUAL_SPACE.getPrimary()};
     private boolean mIsEndLastCharacter;
     private boolean mJustUseEnglishDigit;
     //==============================================================
@@ -424,13 +424,13 @@ public class RtlController {
     }
     private int appendPersian(int englishOffset, Array<BitmapFont.Glyph> rtGlyphs, Array<BitmapFont.Glyph> persianGlyphs , boolean isEnglishContext) {
         int rt = -1;
-        if(!isEnglishContext && rtGlyphs.size > 0 && rtGlyphs.get(englishOffset).id == SPACE_CHAR)
+        if(!isEnglishContext && rtGlyphs.size > 0 && isSpaceChar(rtGlyphs.get(englishOffset).id))
         {
             rtGlyphs.insert(0,rtGlyphs.get(englishOffset));
             rtGlyphs.removeIndex(englishOffset+1);
         }
         // fix space character location
-        if(isEnglishContext && persianGlyphs.size > 0 && persianGlyphs.get(persianGlyphs.size-1).id == SPACE_CHAR)
+        if(isEnglishContext && persianGlyphs.size > 0 && isSpaceChar(persianGlyphs.get(persianGlyphs.size-1).id))
         {
             persianGlyphs.insert(0,persianGlyphs.get(persianGlyphs.size-1));
             persianGlyphs.removeIndex(persianGlyphs.size-1);
@@ -445,6 +445,13 @@ public class RtlController {
         persianGlyphs.clear();
 
         return rt;
+    }
+    public boolean isSpaceChar(int chr) {
+        for (char spaceChar : SPACE_CHARS)
+        {
+            if(spaceChar == chr) return true;
+        }
+        return false;
     }
     private boolean isPersianDigit(char c) {
         return (c >= RtlGlyph.PERSIAN_DIGIT_0.getPrimary() && c <= RtlGlyph.PERSIAN_DIGIT_9.getPrimary()) || (c >= RtlGlyph.PERSIAN_DIGIT__0.getPrimary() && c <= RtlGlyph.PERSIAN_DIGIT__9.getPrimary());
@@ -467,7 +474,7 @@ public class RtlController {
     }
     private char getRtlChar(char previousChar ,char currentChar ,char nextChar ) {
 
-        if(!isRtl(nextChar)) nextChar = 0;
+        if(!isRtl(nextChar) || isSpaceChar(nextChar)) nextChar = 0;
         if(!isRtl(previousChar)) previousChar = 0;
         RtlGlyph nextGlyph = findRtlGlyphOf(nextChar);
         RtlGlyph curGlyph = findRtlGlyphOf(currentChar);
@@ -497,7 +504,7 @@ public class RtlController {
                     }
                 }
             }
-            else if (previousChar ==0 && nextChar != 0)
+            else if (previousChar ==0 && nextChar != 0 )
             {
 //                if(this.mIsEndLastCharacter)
 //                {
