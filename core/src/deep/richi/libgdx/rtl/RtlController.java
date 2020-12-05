@@ -23,7 +23,7 @@ public class RtlController {
     private static final StringBuilder BRACKETS = new StringBuilder("(){}[]<>");
     private static final char EMPTY_CHARACTER = '\u1000';
     private static RtlController mInstance = null;
-    private static final char[] SPACE_CHARS = new char[] {32, (char)RtlGlyph.VIRTUAL_SPACE.getPrimary()};
+    private static final char[] SPACE_CHARS = new char[] {32, (char)RtlGlyph.VIRTUAL_SPACE.getPrimaryChar()};
     private boolean mIsEndLastCharacter;
     private boolean mJustUseEnglishDigit;
     //==============================================================
@@ -144,7 +144,7 @@ public class RtlController {
                 {
                     if (bracketIndex % 2 == 0) // if is opened bracket
                     {
-//                        bracketsGlyphs.insert(0, null);
+                        //                        bracketsGlyphs.insert(0, null);
                         bracketIsEnglish.insert(0,true);
                         //                            bracketsGlyphs.insert(0,g);
                     }
@@ -156,7 +156,7 @@ public class RtlController {
                             {
                                 englishOffset--;
                             }
-//                            bracketsGlyphs.removeIndex(0);
+                            //                            bracketsGlyphs.removeIndex(0);
                             bracketIsEnglish.removeIndex(0);
                         }
                     }
@@ -196,7 +196,7 @@ public class RtlController {
         {
             run.xAdvances.set(i,run.glyphs.get(i-1).xadvance);
         }
-//        run.xAdvances.set(0,layout.width - run.width);
+        //        run.xAdvances.set(0,layout.width - run.width);
     }
     //==============================================================
     // Privates
@@ -236,40 +236,40 @@ public class RtlController {
 
 
 
-//        CharArray brackets = new CharArray();
-//        BooleanArray isEnglishBrackets = new BooleanArray();
-//        boolean isEnglishBracket;
-//        for (int i = 0; i < rt.length; i++)
-//        {
-//            for (int j = 0; j < BRACKETS.length; j++)
-//            {
-//                if (rt.charAt(i) == BRACKETS.charAt(j))
-//                {
-//                    isEnglishBracket = isEnglishBracket(rt,i);
-//                    if( j % 2 ==0) // if bracket opened then
-//                    {
-//                        brackets.insert(0,BRACKETS.charAt(j));
-//                        isEnglishBrackets.insert(0,isEnglishBracket);
-//                        if (!isEnglishBracket)
-//                        {
-//                            rt.setCharAt(i, (char) (BRACKETS.charAt(j + 1)));
-//                            //                            rt.insert(i+1, PERSIAN_BRACKETS_CHAR);
-//                        }
-//                    }
-//                    else // if closed the bracket
-//                    {
-//                        if(!isEnglishBrackets.get(0))
-//                        {
-//                            rt.setCharAt(i, (char) (BRACKETS.charAt(j-1)));
-//                            //                            rt.insert(i+1, PERSIAN_BRACKETS_CHAR);
-//                        }
-//                        brackets.removeIndex(0);
-//                        isEnglishBrackets.removeIndex(0);
-//                    }
-//                    break;
-//                }
-//            }
-//        }
+        //        CharArray brackets = new CharArray();
+        //        BooleanArray isEnglishBrackets = new BooleanArray();
+        //        boolean isEnglishBracket;
+        //        for (int i = 0; i < rt.length; i++)
+        //        {
+        //            for (int j = 0; j < BRACKETS.length; j++)
+        //            {
+        //                if (rt.charAt(i) == BRACKETS.charAt(j))
+        //                {
+        //                    isEnglishBracket = isEnglishBracket(rt,i);
+        //                    if( j % 2 ==0) // if bracket opened then
+        //                    {
+        //                        brackets.insert(0,BRACKETS.charAt(j));
+        //                        isEnglishBrackets.insert(0,isEnglishBracket);
+        //                        if (!isEnglishBracket)
+        //                        {
+        //                            rt.setCharAt(i, (char) (BRACKETS.charAt(j + 1)));
+        //                            //                            rt.insert(i+1, PERSIAN_BRACKETS_CHAR);
+        //                        }
+        //                    }
+        //                    else // if closed the bracket
+        //                    {
+        //                        if(!isEnglishBrackets.get(0))
+        //                        {
+        //                            rt.setCharAt(i, (char) (BRACKETS.charAt(j-1)));
+        //                            //                            rt.insert(i+1, PERSIAN_BRACKETS_CHAR);
+        //                        }
+        //                        brackets.removeIndex(0);
+        //                        isEnglishBrackets.removeIndex(0);
+        //                    }
+        //                    break;
+        //                }
+        //            }
+        //        }
     }
     private int getAnOtherBracketIndex(int bracketIndex) {
         return bracketIndex%2 ==0? bracketIndex+1:bracketIndex-1;
@@ -370,9 +370,9 @@ public class RtlController {
     private void fix_text_length_if_exist_mixedCharacters(StringBuilder rt, CharSequence text) {
         for (int i = rt.length; i < text.length(); i++)
         {
-//            rt.append('\u0000');
+            //            rt.append('\u0000');
             rt.append(' ');
-//            rt.append(EMPTY_CHARACTER);
+            //            rt.append(EMPTY_CHARACTER);
         }
     }
     private int isBracket(char c) {
@@ -454,7 +454,7 @@ public class RtlController {
         return false;
     }
     private boolean isPersianDigit(char c) {
-        return (c >= RtlGlyph.PERSIAN_DIGIT_0.getPrimary() && c <= RtlGlyph.PERSIAN_DIGIT_9.getPrimary()) || (c >= RtlGlyph.PERSIAN_DIGIT__0.getPrimary() && c <= RtlGlyph.PERSIAN_DIGIT__9.getPrimary());
+        return (c >= RtlGlyph.PERSIAN_DIGIT_0.getPrimaryChar() && c <= RtlGlyph.PERSIAN_DIGIT_9.getPrimaryChar()) || (c >= RtlGlyph.PERSIAN_DIGIT__0.getPrimaryChar() && c <= RtlGlyph.PERSIAN_DIGIT__9.getPrimaryChar());
     }
     private boolean isEnglishLetter(char c) {
         return c>=65 && c<= 90 || c>=97 && c<=122;
@@ -465,7 +465,7 @@ public class RtlController {
     private boolean isMixedChar(char rtlChar) {
         for (MixedChars mixedChar: MIXED_CHARS)
         {
-            if(mixedChar.mixedRtlChar.getPrimary() == rtlChar) return true;
+            if(mixedChar.mixedRtlChar.getPrimaryChar() == rtlChar) return true;
             if(mixedChar.mixedRtlChar.getStartChar() == rtlChar) return true;
             if(mixedChar.mixedRtlChar.getCenterChar() == rtlChar) return true;
             if(mixedChar.mixedRtlChar.getEndChar() == rtlChar) return true;
@@ -474,7 +474,7 @@ public class RtlController {
     }
     private char getRtlChar(char previousChar ,char currentChar ,char nextChar ) {
 
-        if(!isRtl(nextChar) || isSpaceChar(nextChar)) nextChar = 0;
+        if(!isRtl(nextChar) || isSpaceChar(nextChar) || !isRtlLetter(nextChar)) nextChar = 0;
         if(!isRtl(previousChar)) previousChar = 0;
         RtlGlyph nextGlyph = findRtlGlyphOf(nextChar);
         RtlGlyph curGlyph = findRtlGlyphOf(currentChar);
@@ -483,7 +483,7 @@ public class RtlController {
         {
             if(previousChar == 0 && nextChar == 0)
             {
-                rt = ((char) curGlyph.getPrimary());
+                rt = ((char) curGlyph.getPrimaryChar());
             }
             else if (previousChar !=0 && nextChar == 0)
             {
@@ -495,7 +495,7 @@ public class RtlController {
                 {
                     if(this.mIsEndLastCharacter)
                     {
-                        rt = ((char) curGlyph.getPrimary());
+                        rt = ((char) curGlyph.getPrimaryChar());
                     }
                     else
                     {
@@ -506,11 +506,11 @@ public class RtlController {
             }
             else if (previousChar ==0 && nextChar != 0 )
             {
-//                if(this.mIsEndLastCharacter)
-//                {
-//                    rt = ((char) glyph.getStartChar());
-//                }
-//                else
+                //                if(this.mIsEndLastCharacter)
+                //                {
+                //                    rt = ((char) glyph.getStartChar());
+                //                }
+                //                else
                 {
 
                     rt = ((char) curGlyph.getStartChar());
@@ -553,13 +553,25 @@ public class RtlController {
         }
         return rt;
     }
+    private boolean isRtlLetter(char rtlChar) {
+        boolean range1 = rtlChar >= RtlGlyph.A__HAT_HOLDER.getPrimaryChar() && rtlChar < RtlGlyph.DOT_PERSIAN.getPrimaryChar();
+        boolean range2 = rtlChar >= RtlGlyph.F.getPrimaryChar() && rtlChar < RtlGlyph.PERSIAN_DIGIT__0.getPrimaryChar();
+        boolean range3 = rtlChar >= 1664 /*0x66e*/ && rtlChar < RtlGlyph.PERSIAN_DIGIT_0.getPrimaryChar();
+        boolean range4 = rtlChar > RtlGlyph.PERSIAN_DIGIT_9.getPrimaryChar() && rtlChar <= 1791;
+        return range1 || range2 || range3 || range4;
+    }
     private RtlGlyph findRtlGlyphOf(char curChar) {
+        RtlGlyph same = null;
         for (RtlGlyph rtlGlyph : ALL_CHARS)
         {
-            if (rtlGlyph.getPrimary() == curChar)
+            if (rtlGlyph.getPrimaryChar() == curChar)
             {
                 return rtlGlyph;
             }
+            //            if(rtlGlyph.isSameOf(curChar))
+            //            {
+            //                same = rtlGlyph; // TODO: 12/5/2020 AD @@@@@
+            //            }
         }
         return null;
     }
@@ -578,7 +590,7 @@ public class RtlController {
     private boolean isMixable(char primaryChar) {
         for (RtlGlyph rtlGlyph : RtlGlyph.MIXABLE)
         {
-            if (rtlGlyph.getPrimary() == primaryChar)
+            if (rtlGlyph.getPrimaryChar() == primaryChar)
             {
                 return true;
             }
@@ -594,7 +606,7 @@ public class RtlController {
 
         for (RtlGlyph rtlGlyph : RtlGlyph.MIXERS)
         {
-            if (rtlGlyph.getPrimary() == primaryCharacter)
+            if (rtlGlyph.getPrimaryChar() == primaryCharacter)
             {
                 return true;
             }
@@ -610,11 +622,11 @@ public class RtlController {
     private char getMergeOf(char beforePrimaryChar, char curPrimaryChar) {
         for (MixedChars mixedChar : MIXED_CHARS)
         {
-            if (mixedChar.primaryMixedChars[0].getPrimary() == beforePrimaryChar && mixedChar.primaryMixedChars[1].getPrimary() == curPrimaryChar)
+            if (mixedChar.primaryMixedChars[0].getPrimaryChar() == beforePrimaryChar && mixedChar.primaryMixedChars[1].getPrimaryChar() == curPrimaryChar)
             {
                 if (mIsEndLastCharacter)
                 {
-                    return (char) mixedChar.mixedRtlChar.getPrimary();
+                    return (char) mixedChar.mixedRtlChar.getPrimaryChar();
                 }
                 else
                 {
