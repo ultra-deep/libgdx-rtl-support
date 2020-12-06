@@ -37,7 +37,7 @@ public class MainScreen extends BaseScreen {
 
         Label einsteinLabel = new Label(EINSTEIN_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.GOLD));
         einsteinLabel.setWrap(true);
-        einsteinLabel.debug();
+//        einsteinLabel.debug();
         einsteinLabel.setWidth(900);
         einsteinLabel.setX(50);
         einsteinLabel.setY(450);
@@ -46,7 +46,7 @@ public class MainScreen extends BaseScreen {
 
         Label fullTestLabel = new Label(WRAP_FULL_TEST_SEQUENCE, new Label.LabelStyle(rtlBitmapFont, Color.WHITE));
 //        Label fullTestLabel = new Label(JUST_ENGLISH_TEXT, new Label.LabelStyle(rtlBitmapFont, Color.WHITE));
-        fullTestLabel.debug();
+//        fullTestLabel.debug();
         fullTestLabel.setWrap(true);
         fullTestLabel.setWidth(900);
         fullTestLabel.setAlignment(Align.left);
