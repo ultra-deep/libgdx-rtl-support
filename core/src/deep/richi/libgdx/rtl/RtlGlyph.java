@@ -124,20 +124,15 @@ enum RtlGlyph {
     //==============================================================
     // Fields and Const
     //==============================================================
-    /**  The mixed characters (ex ) ﻻ ﻵ ﻷ  ﻹ */ public static final RtlGlyph SAMES_CHARACTER[][] = new RtlGlyph[][]{
-            {KAF , KAF_HAMZE}, //
-            {Y, Y_ARABIC___2_DOT}, //
-    };
     /**  The mixed characters (ex ) ﻻ ﻵ ﻷ  ﻹ */ public static final RtlGlyph MIXED_CHARACTER[] = new RtlGlyph[] {LA,LA__HAMZE_BOTTOM,LA__HAMZE_TOP,LA__HAT_HOLDER};
     /** The mixer characters (Alef families) */ public static final RtlGlyph MIXERS[] = new RtlGlyph[] {A__HAMZE_TOP,A__HAMZE_BOTTOM,A__HAT_HOLDER ,A__SIMPLE };
     /** The mixable characters (Just {@link RtlGlyph#LAM} for now...) */ public static final RtlGlyph MIXABLE[] = new RtlGlyph[] {LAM};
     //--------------------------
-    /** The end character is the last character of word if the previous character is sticky */ private RtlGlyph[] sames;
     /** Individual and primary character in normal strings */ private final int primaryChar;
     /** The starter character is the first character if the next character is sticky. */ private final int startChar;
     /** The center character is the middle character if the previous and next character is sticky */ private final int centerChar;
     /** The end character is the last character of word if the previous character is sticky */ private final int endChar;
-    /** The isolated character is the last character of word if the previous character is sticky */ private final int isolateChar;
+    /** The isolated character is the last character of word if the previous and next character is sticky */ private final int isolateChar;
     //==============================================================
     // constructors
     //==============================================================
@@ -156,9 +151,6 @@ enum RtlGlyph {
         this.endChar = endChar;
         this.isolateChar = isolateChar;
     }
-    //    RtlGlyph(int primaryChar, int startChar, int centerChar, int endChar ) {
-    //        this(primaryChar,startChar,centerChar,endChar , 0);
-    //    }
     /**
      * This constructor provided for 1-letter characters (Individual characters).
      * @param primaryChar see {@link RtlGlyph#primaryChar}
@@ -166,17 +158,11 @@ enum RtlGlyph {
     RtlGlyph(int primaryChar) {
         this(primaryChar,0,0,0, 0);
     }
-    //    RtlGlyph(int primaryChar , int isolateChar) {
-    //        this(primaryChar,0,0,0, isolateChar);
-    //    }
     /**
      * This constructor provided for 2-letter characters (Individual characters).
      * @param primaryChar see {@link RtlGlyph#primaryChar}
      * @param endChar see {@link RtlGlyph#endChar}
      */
-    //    RtlGlyph(int primaryChar, int endChar ) {
-    //        this(primaryChar, 0, 0, endChar , 0);
-    //    }
     RtlGlyph(int primaryChar, int endChar , int isolateChar) {
         this(primaryChar, 0, 0, endChar , isolateChar);
     }
@@ -217,6 +203,10 @@ enum RtlGlyph {
         if(endChar ==0) return primaryChar;
         return endChar;
     }
+    /**
+     * The isolated letter, see {@link RtlGlyph#isolateChar}
+     * @return {@link RtlGlyph#endChar} as int
+     */
     public int getIsolateChar() {
         return isolateChar;
     }
@@ -243,39 +233,6 @@ enum RtlGlyph {
     /** @return true if the letter have 4 characters. */
     public boolean isFourCharacter() {
         return startChar != 0 && centerChar !=0 && endChar != 0;
-    }
-    public RtlGlyph[] getSames() {
-        if (this.sames == null)
-        {
-            for (RtlGlyph[] rtlGlyphs : SAMES_CHARACTER)
-            {
-                for (RtlGlyph rtlGlyph : rtlGlyphs)
-                {
-                    if(rtlGlyph.getPrimaryChar() == getPrimaryChar())
-                    {
-                        this.sames = new RtlGlyph[rtlGlyphs.length-1];
-                        int i=0;
-                        for (RtlGlyph r : rtlGlyphs){
-                            if(r.getPrimaryChar() != getPrimaryChar()) this.sames[i++] = r;
-                        }
-                    }
-                }
-            }
-        }
-        return sames;
-    }
-    public boolean isSameOf(char curChar) {
-
-        if(getSames() != null)
-        {
-            for (RtlGlyph same : getSames())
-            {
-                if(same.getPrimaryChar() != curChar){
-                    return true;
-                }
-            }
-        }
-        return false;
     }
     /** @return converted English digit letter to Persian/Arabic digit letter */
     public static char getPersianDigit(char englishDigit) {

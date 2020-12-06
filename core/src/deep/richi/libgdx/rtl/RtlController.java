@@ -568,10 +568,6 @@ public class RtlController {
             {
                 return rtlGlyph;
             }
-            //            if(rtlGlyph.isSameOf(curChar))
-            //            {
-            //                same = rtlGlyph; // TODO: 12/5/2020 AD @@@@@
-            //            }
         }
         return null;
     }
