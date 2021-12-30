@@ -556,7 +556,7 @@ public class RtlController {
     private boolean isRtlLetter(char rtlChar) {
         boolean range1 = rtlChar >= RtlGlyph.A__HAT_HOLDER.getPrimaryChar() && rtlChar < RtlGlyph.ARABIC_TATWEEL.getPrimaryChar();
         boolean range2 = rtlChar >= RtlGlyph.F.getPrimaryChar() && rtlChar < RtlGlyph.PERSIAN_DIGIT__0.getPrimaryChar();
-        boolean range3 = rtlChar >= 1664 /*0x66e*/ && rtlChar < RtlGlyph.PERSIAN_DIGIT_0.getPrimaryChar();
+        boolean range3 = rtlChar >= 1662 /*0x66e*/ && rtlChar < RtlGlyph.PERSIAN_DIGIT_0.getPrimaryChar();
         boolean range4 = rtlChar > RtlGlyph.PERSIAN_DIGIT_9.getPrimaryChar() && rtlChar <= 1791;
         return range1 || range2 || range3 || range4;
     }
